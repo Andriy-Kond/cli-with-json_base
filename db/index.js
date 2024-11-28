@@ -35,17 +35,63 @@ export const addContact = async data => {
 };
 
 export const editContact = async data => {
-  console.log("editContact >> data:::", data);
   const contacts = await getAllContacts();
   const index = contacts.findIndex(contact => contact.id === data.id);
-  console.log("editContact >> index:::", index);
+
   if (index === -1) {
-    console.log("This id not in our db");
+    console.log("This id is not in the db");
     return null;
   }
+
   contacts[index] = data;
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return contacts[index];
+};
+
+// ~ No mutation, but two iteration of array
+export const deleteContact_v1 = async id => {
+  const contacts = await getAllContacts();
+  const deletedContact = contacts.find(contact => contact.id === id);
+  const updatedContacts = contacts.filter(contact => contact.id !== id);
+
+  await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+  return deletedContact || null;
+};
+
+// ~ One iteration, but mutation of array
+export const deleteContact_v2 = async id => {
+  const contacts = await getAllContacts();
+  const idx = contacts.findIndex(item => item.id === id);
+
+  if (idx === -1) return null;
+
+  const [deletedContact] = contacts.splice(idx, 1);
+
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return deletedContact || null;
+};
+
+// ~ Opt.3: One iteration (combining findIndex() and filter() in one - reduce())
+const separateContact = (contacts, id) => {
+  return contacts.reduce(
+    (acc, contact) => {
+      if (contact.id === id) {
+        acc.deletedContact = contact;
+      } else {
+        acc.updatedContacts.push(contact);
+      }
+      return acc;
+    },
+    { updatedContacts: [], deletedContact: null },
+  );
+};
+
+export const deleteContact_v3 = async id => {
+  const contacts = await getAllContacts();
+  const { updatedContacts, deletedContact } = separateContact(contacts, id);
+
+  await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+  return deletedContact || null;
 };
 
 // fs.readFile(filename, [options]) – читання файлу
