@@ -10,6 +10,7 @@ import * as db from "./db/index.js";
 const contactsProcessing = async ({ action, id, name, email, phone }) => {
   switch (action) {
     case "readContact":
+      // If await set before fn who return promise, then fn return result of promise fulfillment
       const contacts = await db.getAllContacts();
       return console.log("all contacts:::", contacts);
 
@@ -34,10 +35,13 @@ const contactsProcessing = async ({ action, id, name, email, phone }) => {
   }
 };
 
+// 1)
 // contactsProcessing({ action: "readContact" });
 
+// 2)
 // contactsProcessing({ action: "getContactById", id: "qdggE76Jtbfd9eWJHrssH" });
 
+// 3)
 // contactsProcessing({
 //   action: "addContact",
 //   name: "Andrii",
@@ -45,6 +49,7 @@ const contactsProcessing = async ({ action, id, name, email, phone }) => {
 //   phone: "555 555 5555",
 // });
 
+// 4)
 // contactsProcessing({
 //   action: "editContact",
 //   id: "2mxsoFRHK5atAIMRGPP1N",
@@ -53,4 +58,5 @@ const contactsProcessing = async ({ action, id, name, email, phone }) => {
 //   phone: "555 555 5555",
 // });
 
-contactsProcessing({ action: "deleteContact", id: "j-Uk9EQJ9TeIFLu-paHOQ" });
+// 5)
+// contactsProcessing({ action: "deleteContact", id: "j-Uk9EQJ9TeIFLu-paHOQ" });
