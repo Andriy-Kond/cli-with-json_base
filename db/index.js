@@ -7,8 +7,19 @@ import contacts from "./contacts.json" assert { type: "json" };
 
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 
+import { fileURLToPath } from "url";
+// % v1.: Starting with Node.js 20.11/21.2, you can use import.meta.dirname (https://nodejs.org/api/esm.html#importmetadirname):
+// const __dirname = import.meta.dirname;
+
+// % v2.: For Node.js 10.12 and higher there's an alternative that doesn't require creating multiple files and handles special characters in filenames across platforms:
+// import { dirname } from 'node:path';
+// import { fileURLToPath } from 'node:url';
+// const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// The built-in modules 'path' and 'url' can be optionally prefixed with the node scheme as 'node:path' and 'node:url' since Node.js 14.14.
+
+// % v3.:
 const __filename = fileURLToPath(import.meta.url); // path to file in ESM
 const __dirname = path.dirname(__filename); // path to dir in ESM
 const contactsPath = path.join(__dirname, "contacts.json"); // Normalize slashes
